@@ -1,6 +1,8 @@
+import 'package:clerk_flutter/clerk_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:go_router/go_router.dart';
 import '../feature_home/providers/feed_provider.dart';
 import '../feature_home/widgets/pin_card.dart';
 
@@ -27,14 +29,26 @@ class ProfileScreen extends ConsumerWidget {
                 leading: Padding(
                   padding: const EdgeInsets.only(left: 16.0),
                   child: CircleAvatar(
-                    backgroundImage: null, // User image
+                    backgroundImage: ClerkAuth.userOf(context)?.imageUrl != null 
+                        ? NetworkImage(ClerkAuth.userOf(context)!.imageUrl!) 
+                        : null, // User image
                     backgroundColor: Colors.grey[800],
-                    child: const Text('J', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                    child: ClerkAuth.userOf(context)?.imageUrl == null
+                        ? const Text('U', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))
+                        : null,
                   ),
                 ),
                 actions: [
                   IconButton(onPressed: () {}, icon: const Icon(Icons.share, color: Colors.white)),
-                  IconButton(onPressed: () {}, icon: const Icon(Icons.more_horiz, color: Colors.white)), // Hexagon usually, but more_horiz strictly
+                  IconButton(
+                    onPressed: () async {
+                      await ClerkAuth.of(context).signOut();
+                      if (context.mounted) {
+                        context.go('/auth'); // Redirect manually just in case
+                      }
+                    }, 
+                    icon: const Icon(Icons.logout, color: Colors.white)
+                  ), 
                 ],
               ),
               SliverToBoxAdapter(
@@ -45,17 +59,22 @@ class ProfileScreen extends ConsumerWidget {
                     CircleAvatar(
                       radius: 54,
                       backgroundColor: Colors.grey[800],
-                      child: const Text('J', style: TextStyle(fontSize: 40, color: Colors.white, fontWeight: FontWeight.bold)),
+                      backgroundImage: ClerkAuth.userOf(context)?.imageUrl != null 
+                          ? NetworkImage(ClerkAuth.userOf(context)!.imageUrl!) 
+                          : null,
+                      child: ClerkAuth.userOf(context)?.imageUrl == null 
+                          ? const Text('U', style: TextStyle(fontSize: 40, color: Colors.white, fontWeight: FontWeight.bold))
+                          : null,
                     ),
                     const SizedBox(height: 12),
-                    const Text(
-                      'Jane Doe',
-                      style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
+                    Text(
+                      ClerkAuth.userOf(context)?.name ?? 'User',
+                      style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
                     ),
                     const SizedBox(height: 4),
-                    const Text(
-                      '@janedoe123',
-                      style: TextStyle(color: Colors.grey, fontSize: 14),
+                    Text(
+                      ClerkAuth.userOf(context)?.email ?? '@user',
+                      style: const TextStyle(color: Colors.grey, fontSize: 14),
                     ),
                     const SizedBox(height: 24),
                     // Search Bar
