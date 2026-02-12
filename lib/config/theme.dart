@@ -5,39 +5,12 @@ import '../core/utils/constants.dart';
 class AppTheme {
   static final ThemeData lightTheme = ThemeData(
     useMaterial3: true,
-    brightness: Brightness.light,
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: Colors.redAccent, // Pinterest Red-ish
-      brightness: Brightness.light,
-    ),
-    scaffoldBackgroundColor: Colors.white,
-    appBarTheme: const AppBarTheme(
-      backgroundColor: Colors.white,
-      elevation: 0,
-      scrolledUnderElevation: 0,
-      systemOverlayStyle: SystemUiOverlayStyle.dark,
-      iconTheme: IconThemeData(color: Colors.black),
-      titleTextStyle: TextStyle(
-        color: Colors.black,
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
-      ),
-    ),
-    cardTheme: CardThemeData(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppConstants.cardRadius),
-      ),
-      color: Colors.transparent, // Pinterest cards are often images
-    ),
-  );
-
-  static final ThemeData darkTheme = ThemeData(
-    useMaterial3: true,
-    brightness: Brightness.dark,
+    brightness: Brightness.dark, // Enforce dark mode even in "light" theme slot
     colorScheme: ColorScheme.fromSeed(
       seedColor: Colors.redAccent,
       brightness: Brightness.dark,
+      background: Colors.black,
+      surface: Colors.black,
     ),
     scaffoldBackgroundColor: Colors.black,
     appBarTheme: const AppBarTheme(
@@ -52,5 +25,30 @@ class AppTheme {
         fontWeight: FontWeight.bold,
       ),
     ),
+    cardTheme: CardThemeData(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppConstants.cardRadius),
+      ),
+      color: Colors.grey[900], 
+    ),
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      backgroundColor: Colors.black,
+      selectedItemColor: Colors.white,
+      unselectedItemColor: Colors.grey,
+    ),
+    navigationBarTheme: NavigationBarThemeData(
+      backgroundColor: Colors.black,
+      indicatorColor: Colors.white10, // Subtle indicator
+      labelTextStyle: MaterialStateProperty.all(const TextStyle(color: Colors.white, fontSize: 12)),
+      iconTheme: MaterialStateProperty.resolveWith((states) {
+        if (states.contains(MaterialState.selected)) {
+          return const IconThemeData(color: Colors.white);
+        }
+        return const IconThemeData(color: Colors.grey);
+      }),
+    )
   );
+
+  static final ThemeData darkTheme = lightTheme; // Use same theme for both
 }
