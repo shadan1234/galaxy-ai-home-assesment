@@ -12,94 +12,88 @@ class ProfileScreen extends ConsumerWidget {
     final feedState = ref.watch(feedProvider);
 
     return Scaffold(
+      backgroundColor: Colors.black, // Dark mode
       body: DefaultTabController(
-        length: 2,
+        length: 3, // Pins, Boards, Collages
         child: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) {
             return [
               SliverAppBar(
+                backgroundColor: Colors.black,
+                foregroundColor: Colors.white,
+                elevation: 0,
                 pinned: true,
+                leadingWidth: 50,
+                leading: Padding(
+                  padding: const EdgeInsets.only(left: 16.0),
+                  child: CircleAvatar(
+                    backgroundImage: null, // User image
+                    backgroundColor: Colors.grey[800],
+                    child: const Text('J', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                  ),
+                ),
                 actions: [
-                  IconButton(onPressed: () {}, icon: const Icon(Icons.share)),
-                  IconButton(onPressed: () {}, icon: const Icon(Icons.more_horiz)),
+                  IconButton(onPressed: () {}, icon: const Icon(Icons.share, color: Colors.white)),
+                  IconButton(onPressed: () {}, icon: const Icon(Icons.more_horiz, color: Colors.white)), // Hexagon usually, but more_horiz strictly
                 ],
               ),
               SliverToBoxAdapter(
                 child: Column(
                   children: [
-                    const SizedBox(height: 16),
-                    CircleAvatar(
-                      radius: 60,
-                      backgroundColor: Colors.grey[200],
-                      child: const Text('U', style: TextStyle(fontSize: 48)),
-                    ),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'User Name',
-                      style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-                    ),
                     const SizedBox(height: 8),
+                    // Main Profile Info
+                    CircleAvatar(
+                      radius: 54,
+                      backgroundColor: Colors.grey[800],
+                      child: const Text('J', style: TextStyle(fontSize: 40, color: Colors.white, fontWeight: FontWeight.bold)),
+                    ),
+                    const SizedBox(height: 12),
                     const Text(
-                      '@username',
-                      style: TextStyle(color: Colors.grey),
+                      'Jane Doe',
+                      style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
+                    ),
+                    const SizedBox(height: 4),
+                    const Text(
+                      '@janedoe123',
+                      style: TextStyle(color: Colors.grey, fontSize: 14),
                     ),
                     const SizedBox(height: 24),
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Column(
-                          children: [
-                            Text('0', style: TextStyle(fontWeight: FontWeight.bold)),
-                            Text('followers'),
-                          ],
-                        ),
-                        SizedBox(width: 32),
-                        Column(
-                          children: [
-                            Text('0', style: TextStyle(fontWeight: FontWeight.bold)),
-                            Text('following'),
-                          ],
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 32),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.grey[200],
-                            foregroundColor: Colors.black,
-                            elevation: 0,
+                    // Search Bar
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: TextField(
+                        style: const TextStyle(color: Colors.white),
+                        decoration: InputDecoration(
+                          hintText: 'Search your pins',
+                          hintStyle: TextStyle(color: Colors.grey[600]),
+                          prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
+                          filled: true,
+                          fillColor: Colors.grey[900],
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: BorderSide.none,
                           ),
-                          child: const Text('Edit Profile'),
+                          contentPadding: const EdgeInsets.symmetric(vertical: 0),
                         ),
-                        const SizedBox(width: 8),
-                        ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.grey[200],
-                            foregroundColor: Colors.black,
-                            elevation: 0,
-                          ),
-                          child: const Text('Share'),
-                        ),
-                      ],
+                      ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 24),
                   ],
                 ),
               ),
-              const SliverPersistentHeader(
+              SliverPersistentHeader(
                 delegate: _SliverAppBarDelegate(
                   TabBar(
-                    labelColor: Colors.black,
+                    labelColor: Colors.white,
                     unselectedLabelColor: Colors.grey,
-                    indicatorColor: Colors.black,
-                    tabs: [
-                      Tab(text: 'Created'),
-                      Tab(text: 'Saved'),
+                    indicatorColor: Colors.white,
+                    indicatorWeight: 3,
+                    labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    indicatorSize: TabBarIndicatorSize.label,
+                    tabs: const [
+                       Tab(text: 'Pins'),
+                       Tab(text: 'Boards'),
+                       Tab(text: 'Collages'),
                     ],
                   ),
                 ),
@@ -109,13 +103,7 @@ class ProfileScreen extends ConsumerWidget {
           },
           body: TabBarView(
             children: [
-              CustomScrollView(
-                slivers: [
-                  SliverFillRemaining(
-                    child: Center(child: Text('No created pins yet')),
-                  ),
-                ],
-              ),
+              // Pins Tab (All Pins)
               feedState.when(
                 data: (pins) => CustomScrollView(
                   slivers: [
@@ -141,9 +129,15 @@ class ProfileScreen extends ConsumerWidget {
                     ),
                   ],
                 ),
-                error: (e, s) => Center(child: Text('Error: $e')),
-                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (e, s) => Center(child: Text('Error: $e', style: const TextStyle(color: Colors.white))),
+                loading: () => const Center(child: CircularProgressIndicator(color: Colors.white)),
               ),
+              
+              // Boards Tab - Placeholder
+              const Center(child: Text('You have no boards yet', style: TextStyle(color: Colors.grey))),
+              
+              // Collages Tab - Placeholder
+              const Center(child: Text('No collages created', style: TextStyle(color: Colors.grey))),
             ],
           ),
         ),
