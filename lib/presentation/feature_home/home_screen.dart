@@ -43,14 +43,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       appBar: AppBar(
         title: const Text('Pinterest'),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              // TODO: Navigate to search
-            },
-          ),
-        ],
       ),
       body: feedState.when(
         data: (pins) => RefreshIndicator(
