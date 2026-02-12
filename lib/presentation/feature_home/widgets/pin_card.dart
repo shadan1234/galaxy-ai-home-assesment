@@ -43,7 +43,7 @@ class PinCard extends StatelessWidget {
                 ),
               ),
             ),
-            // Optional: Title or user info below image if design requires
+            
           ],
         ),
       ),
